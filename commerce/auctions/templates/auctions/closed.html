@@ -1,12 +1,8 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <a href = "{% url 'closed' %}">
-        <button>Closed Listings</button>
-    </a>
-    <br>
-    <h2>Active Listings</h2>
-    <br>
+    <h2>Closed Listings</h2>
+
     <ol>
         {% for listing in listings %}
             <li>
@@ -20,8 +16,6 @@
                     </a>
                 </ul>
             </li>
-        {% empty %}
-            <h1>No Active listing Items</h1>
         {% endfor %}
     </ol>
 {% endblock %}

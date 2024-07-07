@@ -106,7 +106,10 @@ def item(request, title):
     listing = Listings.objects.get(item = title)
     cmnt = Comment.objects.filter(item = listing)
     user = User.objects.get(username = request.user)
-    winner = listing.current_bid.user
+    if listing.current_bid != None:
+        winner = listing.current_bid.user
+    else:
+        winner = request.user
     lists = user.item.all()
     is_watchlist = False
     is_active = listing.status
@@ -197,4 +200,32 @@ def item(request, title):
         "is_watchlist":is_watchlist,
         "is_active":is_active,
         "winner":winner
+    })
+
+@login_required
+def watchlist(request):
+    user = User.objects.get(username = request.user)
+    lists = user.item.all()
+    return render(request, "auctions/watchlist.html",{
+        "lists":lists
+    })
+
+@login_required
+def categories(request):
+    return render(request, "auctions/categories.html",{
+        "categories":CATEGORY_CHOICES
+    })
+
+@login_required
+def list(request,category):
+    listings = Listings.objects.filter(category = category, status = True)
+    return render(request, "auctions/list.html",{
+        "listings":listings
+    })
+
+@login_required
+def closed(request):
+    listings = Listings.objects.filter(status = False)
+    return render(request, "auctions/closed.html",{
+        "listings":listings
     })

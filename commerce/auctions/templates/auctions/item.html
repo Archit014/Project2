@@ -9,8 +9,12 @@
         <li>Starting Bid : {{ listing.start_bid }}</li>
         <li>Current Bid : {{ listing.current_bid.bid }}</li>
         <li>Seller : {{ listing.seller }}</li>
-        <li>Category : {{ listing.category }}</li>
-        <li>Status : {{ listing.status }}</li>
+        <li>Category : {{ listing.get_category_display }}</li>
+        {% if listing.status %}
+        <li>Status : Active</li>
+        {% else %}
+        <li>Status : Closed</li>
+        {% endif %}
         <br>
         <br>
         <li>
