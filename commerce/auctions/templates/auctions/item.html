@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ listing.item }}</h2>
+
+    <ul>
+        <img src = "{{ listing.image }}" alt = "{{ listing.item }}">
+        <li>Description : {{ listing.description }}</li>
+        <li>Starting Bid : {{ listing.start_bid }}</li>
+        <li>Current Bid : {{ listing.current_bid.bid }}</li>
+        <li>Seller : {{ listing.seller }}</li>
+        <li>Category : {{ listing.category }}</li>
+        <li>Status : {{ listing.status }}</li>
+        <br>
+        <br>
+        <li>
+            Comment:
+            <ul>
+                {% for comment in comments %}
+                    <li>{{ comment.comment }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+    {% if is_active  %}
+        {% if user != listing.seller %}
+            <br>
+            <hr>
+            <br>
+            <form action = "{% url 'item'  listing.item %}" method="post">
+                {% csrf_token %}
+                {% if is_watchlist %}
+                    <input type="radio" name="watchlist" value="true">
+                    <label for="watchlist">Remove From watchlist</label><br>
+                {% else %}
+                    <input type="radio" name="watchlist" value="true">
+                    <label for="watchlist">Add to watchlist</label><br>
+                {% endif %}
+                <h2>Add a comment : </h2>
+                <textarea name="comment"></textarea>
+                <br>
+                <br>
+                <h2>Place a Bid  : </h2>
+                <input type="number" placeholder="bid" name="bid" min="{{ listing.start_bid }}">
+                <input type="submit" value="Submit">
+            </form>
+        {% else %}
+            <br>
+            <hr>
+            <br>
+            <form action = "{% url 'item'  listing.item %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Close The Listing" name="close">
+            </form>
+        {% endif %}
+    {% else %}
+            {% if winner == user %}
+                <h1>You won the auction</h1>
+            {% endif %}
+    {% endif %}
+{% endblock %}

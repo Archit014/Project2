@@ -3,5 +3,19 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    <ol>
+        {% for listing in listings %}
+            <li>
+                <ul>
+                    <li>{{ listing.item }}</li>
+                    <img src = "{{ listing.image }}" alt = "{{ listing.item }}">
+                    <li>{{ listing.description }}</li>
+                    <li>Current Bid : {{ listing.current_bid.bid }}</li>
+                    <a href = "{% url 'item'  listing.item %}">
+                        <button>View page</button>
+                    </a>
+                </ul>
+            </li>
+        {% endfor %}
+    </ol>
 {% endblock %}
