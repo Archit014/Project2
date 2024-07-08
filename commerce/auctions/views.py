@@ -124,31 +124,35 @@ def item(request, title):
             listing.save()
             return HttpResponseRedirect(reverse("index"))
         
-        watchlist = request.POST['watchlist']
+        watchlist = request.POST.get('watchlist', False)
         comment = request.POST['comment']
         bid = request.POST['bid']
 
         if is_watchlist:
-            if watchlist == "true":
-                if listing.seller != request.user:
-                    for list in lists:
-                        if list.item == title:
-                            user.item.remove(list)
-                else:
-                    message = "You cannot remove watchlist from your own product"
-                    return render(request, "auctions/error.html",{
-                        "message":message
-                    })
+            if watchlist:
+                if watchlist == "true":
+                    if listing.seller != request.user:
+                        for list in lists:
+                            if list.item == title:
+                                user.item.remove(list)
+                                is_watchlist = False
+                    else:
+                        message = "You cannot remove watchlist from your own product"
+                        return render(request, "auctions/error.html",{
+                            "message":message
+                        })
         else:
-            if watchlist == "true":
-                if listing.seller != request.user:
-                    user.item.add(listing)
-                else:
-                    message = "You cannot add watchlist to your own product"
-                    return render(request, "auctions/error.html",{
-                        "message":message
-                    })
-        
+            if watchlist:
+                if watchlist == "true":
+                    if listing.seller != request.user:
+                        user.item.add(listing)
+                        is_watchlist = True
+                    else:
+                        message = "You cannot add watchlist to your own product"
+                        return render(request, "auctions/error.html",{
+                            "message":message
+                        })
+            
         if comment:
             if listing.seller != request.user:
                 f = Comment(user = request.user, item = listing, comment = comment)

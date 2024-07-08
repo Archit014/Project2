@@ -1,21 +1,28 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <a href = "{% url 'index' %}">
+        <button style="background-color: rgb(22, 186, 66);" class="sv">Active Listings</button>
+    </a>
+    <br>
+    <br>
     <h2>Closed Listings</h2>
-
-    <ol>
-        {% for listing in listings %}
-            <li>
-                <ul>
-                    <li>{{ listing.item }}</li>
-                    <img src = "{{ listing.image }}" alt = "{{ listing.item }}">
-                    <li>{{ listing.description }}</li>
-                    <li>Current Bid : {{ listing.current_bid.bid }}</li>
+    <br>
+    {% for listing in listings %}
+        <div class="index">
+                <img style="display: inline-block;" class="item" src = "{{ listing.image }}" alt = "{{ listing.item }}">
+                <div style="display: inline-block;">
+                    <h3>{{ listing.item }}</h3>
+                    <br>
+                    <h4><b>Price</b> : {{ listing.start_bid }}</h4>
+                    <h4>{{ listing.description }}</h4>
+                    <br>
                     <a href = "{% url 'item'  listing.item %}">
-                        <button>View page</button>
+                        <button class="sv">View page</button>
                     </a>
-                </ul>
-            </li>
-        {% endfor %}
-    </ol>
+                </div>
+        </div>
+    {% empty %}
+        <h1>No Active listing Items</h1>
+    {% endfor %}
 {% endblock %}

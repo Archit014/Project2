@@ -1,65 +1,73 @@
 {% extends "auctions/layout.html" %}
 
-{% block body %}
-    <h2>{{ listing.item }}</h2>
+{% load static %}
 
-    <ul>
-        <img src = "{{ listing.image }}" alt = "{{ listing.item }}">
-        <li>Description : {{ listing.description }}</li>
-        <li>Starting Bid : {{ listing.start_bid }}</li>
-        <li>Current Bid : {{ listing.current_bid.bid }}</li>
-        <li>Seller : {{ listing.seller }}</li>
-        <li>Category : {{ listing.get_category_display }}</li>
-        {% if listing.status %}
-        <li>Status : Active</li>
-        {% else %}
-        <li>Status : Closed</li>
-        {% endif %}
+{% if user.is_authenticated %}
+    {% block body %}
+        <h1 style="text-align: center;">{{ listing.item }}</h1>
         <br>
         <br>
-        <li>
-            Comment:
-            <ul>
-                {% for comment in comments %}
-                    <li>{{ comment.comment }}</li>
-                {% endfor %}
-            </ul>
-        </li>
-    </ul>
-    {% if is_active  %}
-        {% if user != listing.seller %}
-            <br>
-            <hr>
-            <br>
-            <form action = "{% url 'item'  listing.item %}" method="post">
-                {% csrf_token %}
-                {% if is_watchlist %}
-                    <input type="radio" name="watchlist" value="true">
-                    <label for="watchlist">Remove From watchlist</label><br>
+        <hr>
+        <ul style="font-size: large;">
+            <img  style="display: inline-block;" id="list" src = "{{ listing.image }}" alt = "{{ listing.item }}">
+            <div style="display: inline-block;">
+                <li><b>Description</b> : {{ listing.description }}</li>
+                <li><b>Starting Bid</b> : {{ listing.start_bid }}</li>
+                <li><b>Current Bid</b> : {{ listing.current_bid.bid }}</li>
+                <li><b>Seller</b> : {{ listing.seller }}</li>
+                <li><b>Category</b> : {{ listing.get_category_display }}</li>
+                {% if listing.status %}
+                <li><b>Status</b> : Active</li>
                 {% else %}
-                    <input type="radio" name="watchlist" value="true">
-                    <label for="watchlist">Add to watchlist</label><br>
+                <li><b>Status</b> : Closed</li>
                 {% endif %}
-                <h2>Add a comment : </h2>
-                <textarea name="comment"></textarea>
                 <br>
                 <br>
-                <h2>Place a Bid  : </h2>
-                <input type="number" placeholder="bid" name="bid" min="{{ listing.start_bid }}">
-                <input type="submit" value="Submit">
-            </form>
-        {% else %}
-            <br>
-            <hr>
-            <br>
-            <form action = "{% url 'item'  listing.item %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="Close The Listing" name="close">
-            </form>
-        {% endif %}
-    {% else %}
-            {% if winner == user %}
-                <h1>You won the auction</h1>
-            {% endif %}
-    {% endif %}
-{% endblock %}
+                <li>
+                    <b>Comments:</b>
+                    <ul>
+                        {% for comment in comments %}
+                            <li>{{ comment.comment }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </div>
+            <div style="display: inline-block;" id="function">
+                {% if is_active  %}
+                    {% if user != listing.seller %}
+                        <form action = "{% url 'item'  listing.item %}" method="post">
+                            {% csrf_token %}
+                            {% if is_watchlist %}
+                                <input type="radio" name="watchlist" value="true">
+                                <label for="watchlist">Remove From watchlist</label><br>
+                            {% else %}
+                                <input type="radio" name="watchlist" value="true">
+                                <label for="watchlist">Add to watchlist</label><br>
+                            {% endif %}
+                            <div style="display: inline;" id="comment">
+                                <h2>Add a comment : </h2>
+                                <textarea name="comment"></textarea>
+                            </div>
+                            <div style="display: inline;" id="bid">
+                                <h2>Place a Bid  : </h2>
+                                <input type="number" placeholder="bid" name="bid" min="{{ listing.start_bid }}">
+                            </div>
+                            <br>
+                            <br>
+                            <input class="sv" type="submit" value="Submit">
+                        </form>
+                    {% else %}
+                        <form action = "{% url 'item'  listing.item %}" method="post">
+                            {% csrf_token %}
+                            <input class="sv" type="submit" value="Close The Listing" name="close">
+                        </form>
+                    {% endif %}
+                {% else %}
+                    {% if winner == user %}
+                        <h1>You won the auction</h1>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </ul>
+    {% endblock %}
+{% endif %}
